@@ -5,20 +5,16 @@ import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
 import { FileUpload } from 'primereact/fileupload';
-import { InputNumber, InputNumberValueChangeEvent } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { RadioButton, RadioButtonChangeEvent } from 'primereact/radiobutton';
-import { Rating } from 'primereact/rating';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Project } from '@/types';
 import { UserService } from '@/service/UserService';
+import { error } from 'console';
 
-/* @todo Used 'as any' for types here. Will fix in next version due to onSelectionChange event type issue. */
-const Crud = () => {
+const User = () => {
     let emptyUser: Project.User = {
         id: 0,
         name: '',
@@ -32,12 +28,12 @@ const Crud = () => {
     const [deleteUserDialog, setDeleteUserDialog] = useState(false);
     const [deleteUsersDialog, setDeleteUsersDialog] = useState(false);
     const [user, setUser] = useState<Project.User>(emptyUser);
-    const [selectedUsers, setSelectedUsers] = useState(null);
+    const [selectedUsers, setSelectedUsers] = useState<Project.User[]>([]);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
-    const userService = new UserService();
+    const userService = useMemo(() => new UserService(), []);
 
     useEffect(() => {
         if (users.length == 0) {
@@ -51,7 +47,7 @@ const Crud = () => {
                     console.log(error);
                 });
         }
-    }, [users]);
+    }, [userService, users]);
 
     const openNew = () => {
         setUser(emptyUser);
@@ -134,50 +130,31 @@ const Crud = () => {
     };
 
     const deleteUser = () => {
-        userService
-            .deleteUser(user.id)
-            .then((response) => {
-                setDeleteUserDialog(false);
-                setUser(emptyUser);
-                setUsers([]);
-                toast.current?.show({
-                    severity: 'success',
-                    summary: 'Sucesso!',
-                    detail: 'Usuário excluído!',
-                    life: 3000
+        if (user.id) {
+            userService
+                .deleteUser(user.id)
+                .then((response) => {
+                    setDeleteUserDialog(false);
+                    setUser(emptyUser);
+                    setUsers([]);
+                    toast.current?.show({
+                        severity: 'success',
+                        summary: 'Sucesso!',
+                        detail: 'Usuário excluído!',
+                        life: 3000
+                    });
+                })
+                .catch((error) => {
+                    console.log(error);
+                    toast.current?.show({
+                        severity: 'error',
+                        summary: 'Erro!',
+                        detail: 'Erroao deletar usuário!<br>' + error.data.message,
+                        life: 3000
+                    });
                 });
-            })
-            .catch((error) => {
-                console.log(error);
-                toast.current?.show({
-                    severity: 'error',
-                    summary: 'Erro!',
-                    detail: 'Erroao deletar usuário!<br>' + error.data.message,
-                    life: 3000
-                });
-            });
+        }
     };
-
-    /*const findIndexById = (id: string) => {
-        let index = -1;
-        for (let i = 0; i < (users as any)?.length; i++) {
-            if ((users as any)[i].id === id) {
-                index = i;
-                break;
-            }
-        }
-
-        return index;
-    };*/
-
-    /*const createId = () => {
-        let id = '';
-        let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (let i = 0; i < 5; i++) {
-            id += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return id;
-    };*/
 
     const exportCSV = () => {
         dt.current?.exportCSV();
@@ -188,23 +165,34 @@ const Crud = () => {
     };
 
     const deleteSelectedUsers = () => {
-        /* let _users = (users as any)?.filter((val: any) => !(selectedUsers as any)?.includes(val));
-        setUsers(_users);
-        setDeleteUsersDialog(false);
-        setSelectedUsers(null);
-        toast.current?.show({
-            severity: 'success',
-            summary: 'Successful',
-            detail: 'Users Deleted',
-            life: 3000
-        });*/
+        Promise.all(
+            selectedUsers.map(async (_user) => {
+                if (_user.id) {
+                    await userService.deleteUser(_user.id);
+                }
+            })
+        )
+            .then((response) => {
+                setUsers([]);
+                setSelectedUsers([]);
+                setDeleteUsersDialog(false);
+                toast.current?.show({
+                    severity: 'success',
+                    summary: 'Sucesso!',
+                    detail: 'Usuários excluídos com sucesso!',
+                    life: 3000
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+                toast.current?.show({
+                    severity: 'error',
+                    summary: 'Erro!',
+                    detail: 'Erro ao excluir usuários!<br>' + error.data.message,
+                    life: 3000
+                });
+            });
     };
-
-    /*const onCategoryChange = (e: RadioButtonChangeEvent) => {
-        let _user = { ...user };
-        _user['category'] = e.value;
-        setUser(_user);
-    };*/
 
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, name: string) => {
         const val = (e.target && e.target.value) || '';
@@ -213,14 +201,6 @@ const Crud = () => {
 
         setUser(_user);
     };
-
-    /*const onInputNumberChange = (e: InputNumberValueChangeEvent, name: string) => {
-        const val = e.value || 0;
-        let _user = { ...user };
-        _user[`${name}`] = val;
-
-        setUser(_user);
-    };*/
 
     const leftToolbarTemplate = () => {
         return (
@@ -434,4 +414,4 @@ const Crud = () => {
     );
 };
 
-export default Crud;
+export default User;
