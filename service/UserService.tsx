@@ -1,21 +1,13 @@
-import axios from 'axios';
+import axios from "axios";
+import { BaseService } from "./BaseService";
 
 export const axiosInstance = axios.create({
-    baseURL: 'http://localhost:8080/api/user'
+    baseURL: 'http://localhost:8080/user'
 });
 
-export class UserService {
-    findUsers() {
-        return axiosInstance.get('/findUsers');
-    }
-    findById() {}
-    saveUser(user: Project.User) {
-        return axiosInstance.post('/saveUser', user);
-    }
-    updateUser(id: number, user: Project.User) {
-        return axiosInstance.put('/updateUser/' + id, user);
-    }
-    deleteUser(id: number) {
-        return axiosInstance.delete('deleteUser/' + id);
+export class UserService extends BaseService {
+
+    constructor() {
+        super("/user")
     }
 }

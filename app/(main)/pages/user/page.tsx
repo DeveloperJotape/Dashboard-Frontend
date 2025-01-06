@@ -39,8 +39,9 @@ const User = () => {
         if (users.length == 0) {
             /* Conexão com BD */
             userService
-                .findUsers()
+                .findAll()
                 .then((response) => {
+                    console.log(response.data)
                     setUsers(response.data);
                 })
                 .catch((error) => {
@@ -72,7 +73,7 @@ const User = () => {
         setSubmitted(true);
         if (!user.id) {
             userService
-                .saveUser(user)
+                .save(user)
                 .then((response) => {
                     setUserDialog(false);
                     setUser(emptyUser);
@@ -95,7 +96,7 @@ const User = () => {
                 });
         } else {
             userService
-                .updateUser(user.id, user)
+                .update(user.id, user)
                 .then((response) => {
                     setUserDialog(false);
                     setUser(emptyUser);
@@ -132,7 +133,7 @@ const User = () => {
     const deleteUser = () => {
         if (user.id) {
             userService
-                .deleteUser(user.id)
+                .delete(user.id)
                 .then((response) => {
                     setDeleteUserDialog(false);
                     setUser(emptyUser);
@@ -168,7 +169,7 @@ const User = () => {
         Promise.all(
             selectedUsers.map(async (_user) => {
                 if (_user.id) {
-                    await userService.deleteUser(_user.id);
+                    await userService.delete(_user.id);
                 }
             })
         )
