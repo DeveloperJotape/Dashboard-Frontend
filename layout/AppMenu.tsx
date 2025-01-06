@@ -13,11 +13,19 @@ const AppMenu = () => {
     const model: AppMenuItem[] = [
         {
             label: 'Operações',
-            items: [{
-                label: 'Usuário', icon: 'pi pi-user', to: '/pages/user'
-            }]
-
-        },
+            items: [
+                {
+                    label: 'Usuário',
+                    icon: 'pi pi-user',
+                    to: '/pages/user'
+                },
+                {
+                    label: 'Recurso',
+                    icon: 'pi pi-cog',
+                    to: '/pages/resource'
+                }
+            ]
+        }
         /*{
             label: 'Home',
             items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
@@ -184,8 +192,6 @@ const AppMenu = () => {
                 {model.map((item, i) => {
                     return !item?.seperator ? <AppMenuitem item={item} root={true} index={i} key={item.label} /> : <li className="menu-separator"></li>;
                 })}
-
-               
             </ul>
         </MenuProvider>
     );
