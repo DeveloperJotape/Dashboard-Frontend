@@ -41,7 +41,7 @@ const User = () => {
             userService
                 .findAll()
                 .then((response) => {
-                    console.log(response.data)
+                    console.log(response.data);
                     setUsers(response.data);
                 })
                 .catch((error) => {
@@ -90,7 +90,7 @@ const User = () => {
                     toast.current?.show({
                         severity: 'error',
                         summary: 'Erro!',
-                        detail: 'Erro ao salvar!<br>' + error.data.message,
+                        detail: 'Erro ao salvar!',
                         life: 3000
                     });
                 });
