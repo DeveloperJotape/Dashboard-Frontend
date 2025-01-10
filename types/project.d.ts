@@ -12,4 +12,9 @@ declare namespace Project {
         name: string;
         resourceKey: string;
     };
+
+    type ProfileUser = {
+        id: number;
+        description: string;
+    };
 }
