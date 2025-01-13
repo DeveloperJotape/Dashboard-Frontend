@@ -20,7 +20,7 @@ const Resource = () => {
         resourceKey: ''
     };
 
-    const [resources, setResources] = useState<Project.Resource[]>([]);
+    const [resources, setResources] = useState<Project.Resource[] | null>([]);
     const [resourceDialog, setResourceDialog] = useState(false);
     const [deleteResourceDialog, setDeleteResourceDialog] = useState(false);
     const [deleteResourcesDialog, setDeleteResourcesDialog] = useState(false);
@@ -33,7 +33,7 @@ const Resource = () => {
     const resourceService = useMemo(() => new ResourceService(), []);
 
     useEffect(() => {
-        if (resources.length == 0) {
+        if (!resources) {
             /* Conexão com BD */
             resourceService
                 .findAll()
@@ -74,7 +74,7 @@ const Resource = () => {
                 .then((response) => {
                     setResourceDialog(false);
                     setResource(emptyResource);
-                    setResources([]);
+                    setResources(null);
                     toast.current?.show({
                         severity: 'info',
                         summary: 'Sucesso!',
@@ -97,7 +97,7 @@ const Resource = () => {
                 .then((response) => {
                     setResourceDialog(false);
                     setResource(emptyResource);
-                    setResources([]);
+                    setResources(null);
                     toast.current?.show({
                         severity: 'success',
                         summary: 'Sucesso!',
@@ -134,7 +134,7 @@ const Resource = () => {
                 .then((response) => {
                     setDeleteResourceDialog(false);
                     setResource(emptyResource);
-                    setResources([]);
+                    setResources(null);
                     toast.current?.show({
                         severity: 'success',
                         summary: 'Sucesso!',
@@ -171,7 +171,7 @@ const Resource = () => {
             })
         )
             .then((response) => {
-                setResources([]);
+                setResources(null);
                 setSelectedResources([]);
                 setDeleteResourcesDialog(false);
                 toast.current?.show({

@@ -23,7 +23,7 @@ const User = () => {
         email: ''
     };
 
-    const [users, setUsers] = useState<Project.User[]>([]);
+    const [users, setUsers] = useState<Project.User[] | null>([]);
     const [userDialog, setUserDialog] = useState(false);
     const [deleteUserDialog, setDeleteUserDialog] = useState(false);
     const [deleteUsersDialog, setDeleteUsersDialog] = useState(false);
@@ -36,7 +36,7 @@ const User = () => {
     const userService = useMemo(() => new UserService(), []);
 
     useEffect(() => {
-        if (users.length == 0) {
+        if (!users) {
             /* Conexão com BD */
             userService
                 .findAll()
@@ -77,7 +77,7 @@ const User = () => {
                 .then((response) => {
                     setUserDialog(false);
                     setUser(emptyUser);
-                    setUsers([]);
+                    setUsers(null);
                     toast.current?.show({
                         severity: 'info',
                         summary: 'Sucesso!',
@@ -100,7 +100,7 @@ const User = () => {
                 .then((response) => {
                     setUserDialog(false);
                     setUser(emptyUser);
-                    setUsers([]);
+                    setUsers(null);
                     toast.current?.show({
                         severity: 'success',
                         summary: 'Sucesso!',
@@ -137,7 +137,7 @@ const User = () => {
                 .then((response) => {
                     setDeleteUserDialog(false);
                     setUser(emptyUser);
-                    setUsers([]);
+                    setUsers(null);
                     toast.current?.show({
                         severity: 'success',
                         summary: 'Sucesso!',
@@ -174,7 +174,7 @@ const User = () => {
             })
         )
             .then((response) => {
-                setUsers([]);
+                setUsers(null);
                 setSelectedUsers([]);
                 setDeleteUsersDialog(false);
                 toast.current?.show({
