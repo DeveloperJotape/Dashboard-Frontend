@@ -23,9 +23,14 @@ const AppMenu = () => {
                     label: 'Recurso',
                     icon: 'pi pi-cog',
                     to: '/pages/resource'
+                },
+                {
+                    label: 'Perfil',
+                    icon: 'pi pi-folder',
+                    to: '/pages/profile-user'
                 }
             ]
-        }
+        },
         /*{
             label: 'Home',
             items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
@@ -57,14 +62,14 @@ const AppMenu = () => {
                 { label: 'Free Blocks', icon: 'pi pi-fw pi-eye', to: '/blocks', badge: 'NEW' },
                 { label: 'All Blocks', icon: 'pi pi-fw pi-globe', url: 'https://blocks.primereact.org', target: '_blank' }
             ]
-        },
+        },*/
         {
-            label: 'Utilities',
+            label: 'Icones',
             items: [
-                { label: 'PrimeIcons', icon: 'pi pi-fw pi-prime', to: '/utilities/icons' },
-                { label: 'PrimeFlex', icon: 'pi pi-fw pi-desktop', url: 'https://primeflex.org/', target: '_blank' }
+                { label: 'PrimeIcons', icon: 'pi pi-fw pi-prime', to: '/utilities/icons' }
+                /*{ label: 'PrimeFlex', icon: 'pi pi-fw pi-desktop', url: 'https://primeflex.org/', target: '_blank' }*/
             ]
-        },
+        } /*
         {
             label: 'Pages',
             icon: 'pi pi-fw pi-briefcase',
