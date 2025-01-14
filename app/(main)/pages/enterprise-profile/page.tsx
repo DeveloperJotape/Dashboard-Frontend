@@ -11,69 +11,69 @@ import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Project } from '@/types';
-import { ProfileUserService } from '@/service/ProfileUserService';
+import { EnterpriseProfileService } from '@/service/EnterpriseProfileService';
 
-const ProfileUser = () => {
-    let emptyProfileUser: Project.ProfileUser = {
+const EnterpriseProfile = () => {
+    let emptyEnterpriseProfile: Project.EnterpriseProfile = {
         id: 0,
         description: ''
     };
 
-    const [profileUsers, setProfileUsers] = useState<Project.ProfileUser[] | null>([]);
-    const [profileUserDialog, setProfileUserDialog] = useState(false);
-    const [deleteProfileUserDialog, setDeleteProfileUserDialog] = useState(false);
-    const [deleteProfileUsersDialog, setDeleteProfileUsersDialog] = useState(false);
-    const [profileUser, setProfileUser] = useState<Project.ProfileUser>(emptyProfileUser);
-    const [selectedProfileUsers, setSelectedProfileUsers] = useState<Project.ProfileUser[]>([]);
+    const [enterpriseProfiles, setEnterpriseProfiles] = useState<Project.EnterpriseProfile[] | null>([]);
+    const [enterpriseProfileDialog, setEnterpriseProfileDialog] = useState(false);
+    const [deleteEnterpriseProfileDialog, setDeleteEnterpriseProfileDialog] = useState(false);
+    const [deleteEnterpriseProfilesDialog, setDeleteEnterpriseProfilesDialog] = useState(false);
+    const [enterpriseProfile, setEnterpriseProfile] = useState<Project.EnterpriseProfile>(emptyEnterpriseProfile);
+    const [selectedEnterpriseProfiles, setSelectedEnterpriseProfiles] = useState<Project.EnterpriseProfile[]>([]);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
-    const profileUserService = useMemo(() => new ProfileUserService(), []);
+    const enterpriseProfileService = useMemo(() => new EnterpriseProfileService(), []);
 
     useEffect(() => {
-        if (!profileUsers) {
+        if (!enterpriseProfiles) {
             /* Conexão com BD */
-            profileUserService
+            enterpriseProfileService
                 .findAll()
                 .then((response) => {
                     console.log(response.data);
-                    setProfileUsers(response.data);
+                    setEnterpriseProfiles(response.data);
                 })
                 .catch((error) => {
                     console.log(error);
                 });
         }
-    }, [profileUserService, profileUsers]);
+    }, [enterpriseProfileService, enterpriseProfiles]);
 
     const openNew = () => {
-        setProfileUser(emptyProfileUser);
+        setEnterpriseProfile(emptyEnterpriseProfile);
         setSubmitted(false);
-        setProfileUserDialog(true);
+        setEnterpriseProfileDialog(true);
     };
 
     const hideDialog = () => {
         setSubmitted(false);
-        setProfileUserDialog(false);
+        setEnterpriseProfileDialog(false);
     };
 
-    const hideDeleteProfileUserDialog = () => {
-        setDeleteProfileUserDialog(false);
+    const hideDeleteEnterpriseProfileDialog = () => {
+        setDeleteEnterpriseProfileDialog(false);
     };
 
-    const hideDeleteProfileUsersDialog = () => {
-        setDeleteProfileUsersDialog(false);
+    const hideDeleteEnterpriseProfilesDialog = () => {
+        setDeleteEnterpriseProfilesDialog(false);
     };
 
-    const saveProfileUser = () => {
+    const saveEnterpriseProfile = () => {
         setSubmitted(true);
-        if (!profileUser.id) {
-            profileUserService
-                .save(profileUser)
+        if (!enterpriseProfile.id) {
+            enterpriseProfileService
+                .save(enterpriseProfile)
                 .then((response) => {
-                    setProfileUserDialog(false);
-                    setProfileUser(emptyProfileUser);
-                    setProfileUsers(null);
+                    setEnterpriseProfileDialog(false);
+                    setEnterpriseProfile(emptyEnterpriseProfile);
+                    setEnterpriseProfiles(null);
                     toast.current?.show({
                         severity: 'info',
                         summary: 'Sucesso!',
@@ -91,12 +91,12 @@ const ProfileUser = () => {
                     });
                 });
         } else {
-            profileUserService
-                .update(profileUser.id, profileUser)
+            enterpriseProfileService
+                .update(enterpriseProfile.id, enterpriseProfile)
                 .then((response) => {
-                    setProfileUserDialog(false);
-                    setProfileUser(emptyProfileUser);
-                    setProfileUsers(null);
+                    setEnterpriseProfileDialog(false);
+                    setEnterpriseProfile(emptyEnterpriseProfile);
+                    setEnterpriseProfiles(null);
                     toast.current?.show({
                         severity: 'success',
                         summary: 'Sucesso!',
@@ -116,24 +116,24 @@ const ProfileUser = () => {
         }
     };
 
-    const editProfileUser = (profileUser: Project.ProfileUser) => {
-        setProfileUser({ ...profileUser });
-        setProfileUserDialog(true);
+    const editEnterpriseProfile = (enterpriseProfile: Project.EnterpriseProfile) => {
+        setEnterpriseProfile({ ...enterpriseProfile });
+        setEnterpriseProfileDialog(true);
     };
 
-    const confirmDeleteProfileUser = (profileUser: Project.ProfileUser) => {
-        setProfileUser(profileUser);
-        setDeleteProfileUserDialog(true);
+    const confirmDeleteEnterpriseProfile = (enterpriseProfile: Project.EnterpriseProfile) => {
+        setEnterpriseProfile(enterpriseProfile);
+        setDeleteEnterpriseProfileDialog(true);
     };
 
-    const deleteProfileUser = () => {
-        if (profileUser.id) {
-            profileUserService
-                .delete(profileUser.id)
+    const deleteEnterpriseProfile = () => {
+        if (enterpriseProfile.id) {
+            enterpriseProfileService
+                .delete(enterpriseProfile.id)
                 .then((response) => {
-                    setDeleteProfileUserDialog(false);
-                    setProfileUser(emptyProfileUser);
-                    setProfileUsers(null);
+                    setDeleteEnterpriseProfileDialog(false);
+                    setEnterpriseProfile(emptyEnterpriseProfile);
+                    setEnterpriseProfiles(null);
                     toast.current?.show({
                         severity: 'success',
                         summary: 'Sucesso!',
@@ -158,21 +158,21 @@ const ProfileUser = () => {
     };
 
     const confirmDeleteSelected = () => {
-        setDeleteProfileUsersDialog(true);
+        setDeleteEnterpriseProfilesDialog(true);
     };
 
-    const deleteSelectedProfileUsers = () => {
+    const deleteSelectedEnterpriseProfiles = () => {
         Promise.all(
-            selectedProfileUsers.map(async (_profileUser) => {
-                if (_profileUser.id) {
-                    await profileUserService.delete(_profileUser.id);
+            selectedEnterpriseProfiles.map(async (_enterpriseProfile) => {
+                if (_enterpriseProfile.id) {
+                    await enterpriseProfileService.delete(_enterpriseProfile.id);
                 }
             })
         )
             .then((response) => {
-                setProfileUsers(null);
-                setSelectedProfileUsers([]);
-                setDeleteProfileUsersDialog(false);
+                setEnterpriseProfiles(null);
+                setSelectedEnterpriseProfiles([]);
+                setDeleteEnterpriseProfilesDialog(false);
                 toast.current?.show({
                     severity: 'success',
                     summary: 'Sucesso!',
@@ -193,10 +193,10 @@ const ProfileUser = () => {
 
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, description: string) => {
         const val = (e.target && e.target.value) || '';
-        let _profileUser = { ...profileUser };
-        _profileUser[`${description}`] = val;
+        let _enterpriseProfile = { ...enterpriseProfile };
+        _enterpriseProfile[`${description}`] = val;
 
-        setProfileUser(_profileUser);
+        setEnterpriseProfile(_enterpriseProfile);
     };
 
     const leftToolbarTemplate = () => {
@@ -204,7 +204,7 @@ const ProfileUser = () => {
             <React.Fragment>
                 <div className="my-2">
                     <Button label="Novo" icon="pi pi-plus" severity="success" className=" mr-2" onClick={openNew} />
-                    <Button label="Excluir" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedProfileUsers || !(selectedProfileUsers as any).length} />
+                    <Button label="Excluir" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedEnterpriseProfiles || !(selectedEnterpriseProfiles as any).length} />
                 </div>
             </React.Fragment>
         );
@@ -219,7 +219,7 @@ const ProfileUser = () => {
         );
     };
 
-    const idBodyTemplate = (rowData: Project.ProfileUser) => {
+    const idBodyTemplate = (rowData: Project.EnterpriseProfile) => {
         return (
             <>
                 <span className="p-column-title">Id</span>
@@ -228,7 +228,7 @@ const ProfileUser = () => {
         );
     };
 
-    const descriptionBodyTemplate = (rowData: Project.ProfileUser) => {
+    const descriptionBodyTemplate = (rowData: Project.EnterpriseProfile) => {
         return (
             <>
                 <span className="p-column-title">Descrição</span>
@@ -237,11 +237,11 @@ const ProfileUser = () => {
         );
     };
 
-    const actionBodyTemplate = (rowData: Project.ProfileUser) => {
+    const actionBodyTemplate = (rowData: Project.EnterpriseProfile) => {
         return (
             <>
-                <Button icon="pi pi-pencil" rounded severity="success" className="mr-2" onClick={() => editProfileUser(rowData)} />
-                <Button icon="pi pi-trash" rounded severity="warning" onClick={() => confirmDeleteProfileUser(rowData)} />
+                <Button icon="pi pi-pencil" rounded severity="success" className="mr-2" onClick={() => editEnterpriseProfile(rowData)} />
+                <Button icon="pi pi-trash" rounded severity="warning" onClick={() => confirmDeleteEnterpriseProfile(rowData)} />
             </>
         );
     };
@@ -256,22 +256,22 @@ const ProfileUser = () => {
         </div>
     );
 
-    const profileUserDialogFooter = (
+    const enterpriseProfileDialogFooter = (
         <>
             <Button label="Cancelar" icon="pi pi-times" text onClick={hideDialog} />
-            <Button label="Salvar" icon="pi pi-check" text onClick={saveProfileUser} />
+            <Button label="Salvar" icon="pi pi-check" text onClick={saveEnterpriseProfile} />
         </>
     );
-    const deleteProfileUserDialogFooter = (
+    const deleteEnterpriseProfileDialogFooter = (
         <>
-            <Button label="Não" icon="pi pi-times" text onClick={hideDeleteProfileUserDialog} />
-            <Button label="Sim" icon="pi pi-check" text onClick={deleteProfileUser} />
+            <Button label="Não" icon="pi pi-times" text onClick={hideDeleteEnterpriseProfileDialog} />
+            <Button label="Sim" icon="pi pi-check" text onClick={deleteEnterpriseProfile} />
         </>
     );
-    const deleteProfileUsersDialogFooter = (
+    const deleteEnterpriseProfilesDialogFooter = (
         <>
-            <Button label="Não" icon="pi pi-times" text onClick={hideDeleteProfileUsersDialog} />
-            <Button label="Sim" icon="pi pi-check" text onClick={deleteSelectedProfileUsers} />
+            <Button label="Não" icon="pi pi-times" text onClick={hideDeleteEnterpriseProfilesDialog} />
+            <Button label="Sim" icon="pi pi-check" text onClick={deleteSelectedEnterpriseProfiles} />
         </>
     );
 
@@ -284,9 +284,9 @@ const ProfileUser = () => {
 
                     <DataTable
                         ref={dt}
-                        value={profileUsers}
-                        selection={selectedProfileUsers}
-                        onSelectionChange={(e) => setSelectedProfileUsers(e.value as any)}
+                        value={enterpriseProfiles}
+                        selection={selectedEnterpriseProfiles}
+                        onSelectionChange={(e) => setSelectedEnterpriseProfiles(e.value as any)}
                         dataKey="id"
                         paginator
                         rows={10}
@@ -307,38 +307,38 @@ const ProfileUser = () => {
                         <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                     </DataTable>
 
-                    <Dialog visible={profileUserDialog} style={{ width: '450px' }} header="Detalhes do recurso" modal className="p-fluid" footer={profileUserDialogFooter} onHide={hideDialog}>
+                    <Dialog visible={enterpriseProfileDialog} style={{ width: '450px' }} header="Detalhes do recurso" modal className="p-fluid" footer={enterpriseProfileDialogFooter} onHide={hideDialog}>
                         <div className="field">
                             <label htmlFor="description">Descrição</label>
                             <InputText
                                 id="description"
-                                value={profileUser.description}
+                                value={enterpriseProfile.description}
                                 onChange={(e) => onInputChange(e, 'description')}
                                 required
                                 autoFocus
                                 className={classNames({
-                                    'p-invalid': submitted && !profileUser.description
+                                    'p-invalid': submitted && !enterpriseProfile.description
                                 })}
                             />
-                            {submitted && !profileUser.description && <small className="p-invalid">Descrição é obrigatória!</small>}
+                            {submitted && !enterpriseProfile.description && <small className="p-invalid">Descrição é obrigatória!</small>}
                         </div>
                     </Dialog>
 
-                    <Dialog visible={deleteProfileUserDialog} style={{ width: '450px' }} header="Confirmar" modal footer={deleteProfileUserDialogFooter} onHide={hideDeleteProfileUserDialog}>
+                    <Dialog visible={deleteEnterpriseProfileDialog} style={{ width: '450px' }} header="Confirmar" modal footer={deleteEnterpriseProfileDialogFooter} onHide={hideDeleteEnterpriseProfileDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {profileUser && (
+                            {enterpriseProfile && (
                                 <span>
-                                    Você realmente deseja deletar <b>{profileUser.description}</b>?
+                                    Você realmente deseja deletar <b>{enterpriseProfile.description}</b>?
                                 </span>
                             )}
                         </div>
                     </Dialog>
 
-                    <Dialog visible={deleteProfileUsersDialog} style={{ width: '450px' }} header="Confirmar" modal footer={deleteProfileUsersDialogFooter} onHide={hideDeleteProfileUsersDialog}>
+                    <Dialog visible={deleteEnterpriseProfilesDialog} style={{ width: '450px' }} header="Confirmar" modal footer={deleteEnterpriseProfilesDialogFooter} onHide={hideDeleteEnterpriseProfilesDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {profileUser && <span>Você realmente deseja deletar os perfis selecionados?</span>}
+                            {enterpriseProfile && <span>Você realmente deseja deletar os perfis selecionados?</span>}
                         </div>
                     </Dialog>
                 </div>
@@ -347,4 +347,4 @@ const ProfileUser = () => {
     );
 };
 
-export default ProfileUser;
+export default EnterpriseProfile;

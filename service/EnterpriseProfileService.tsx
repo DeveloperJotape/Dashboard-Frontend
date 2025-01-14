@@ -1,6 +1,6 @@
 import { BaseService } from './BaseService';
 
-export class ProfileUserService extends BaseService {
+export class EnterpriseProfileService extends BaseService {
     constructor() {
         super('/profile');
     }

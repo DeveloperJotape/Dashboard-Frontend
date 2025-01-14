@@ -13,7 +13,7 @@ declare namespace Project {
         resourceKey: string;
     };
 
-    type ProfileUser = {
+    type EnterpriseProfile = {
         id: number;
         description: string;
     };
